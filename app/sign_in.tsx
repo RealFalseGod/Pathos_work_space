@@ -1,16 +1,25 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image,Button} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import { Link } from "expo-router";
 const sign_in = () => {
   return (
-    <View className='bg-white h-full flex items-center'>
-    <Image source={require('../assets/images/logo.png')} resizeMode='contain' className='w-1/2'/>
-    <Text className="-mt-50 text-lg font-semibold text-center">
-    Level up and improve
+    
+    <View className='flex-1 justify-center items-center'>
+  <View>
+    <Text className="pt-10 text-8xl  font-Poppins-semiBold text-center text-[#58cc02] ">
+    Pathos
   </Text>
-   
+  
+   <Text className="text-xl  font-Poppins-semiBold text-center text-[#58cc02] ">
+    Level Up Your Mental Health
+    </Text>   
+    </View>
+    <View className='flex-2 justify-end items-center p-4'>
+      <Link href='./sign_up'> GET STARTED </Link>
+      <Link href='./sign_up'> I ALREADY HAVE AN ACCOUNT  </Link>
       
+    </View>
     </View>
   )
 }
