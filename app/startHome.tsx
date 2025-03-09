@@ -2,7 +2,7 @@ import { View, Text, ScrollView, Image,Button} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link } from "expo-router";
-const sign_in = () => {
+const startHome = () => {
   return (
     
     <View className='flex-1 justify-center items-center'>
@@ -17,11 +17,11 @@ const sign_in = () => {
     </View>
     <View className='flex-2 justify-end items-center p-4'>
       <Link href='./sign_up'> GET STARTED </Link>
-      <Link href='./sign_up'> I ALREADY HAVE AN ACCOUNT  </Link>
+      <Link href='./sign_in'> I ALREADY HAVE AN ACCOUNT  </Link>
       
     </View>
     </View>
   )
 }
 
-export default sign_in
+export default startHome

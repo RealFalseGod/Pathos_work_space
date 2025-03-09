@@ -9,8 +9,8 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-    <Text className="font-bold text-lg my-10">Welcome to my App</Text>
-    <Link href='/sign_in'> Sign in</Link>
+    <Text className="font-bold text-lg my-10">Welcome to my Pathos</Text>
+    <Link href='/startHome'> Home </Link>
     </View>
   );
 }
