@@ -11,6 +11,9 @@ export default function Index() {
     >
     <Text className="font-bold text-lg my-10">Welcome to my Pathos</Text>
     <Link href='/startHome'> Home </Link>
+    <Link href='./home'> After Login Home Page  </Link>
+    <Link href='./home'> Profile Page  </Link>
+    <Link href='./start'> start  </Link>
     </View>
   );
 }
