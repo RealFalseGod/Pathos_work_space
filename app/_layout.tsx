@@ -2,6 +2,10 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import './globals.css';
 import { useEffect } from "react";
+import { FontAwesome } from '@expo/vector-icons';
+import Home from './(roots)/(tabs)/Home';
+import Index from './(roots)/(tabs)/index';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 export default function RootLayout() {
   const [fontsLoaded] = useFonts( {
 "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
@@ -23,6 +27,29 @@ export default function RootLayout() {
   "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   "Poppins-ThinItalic": require("../assets/fonts/Poppins-ThinItalic.ttf"),
   })
+  
+const Tab = createBottomTabNavigator();
+
+const TabNavigator = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="home" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
   useEffect( () =>
   {
     if (fontsLoaded) {

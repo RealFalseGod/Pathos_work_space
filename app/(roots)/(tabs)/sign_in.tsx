@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { Alert } from 'react-native';
 
-const sign_in = () => {
+const Sign_in = () => {
   const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const router = useRouter();
@@ -14,7 +14,7 @@ const sign_in = () => {
           await signInWithEmailAndPassword(auth, email, password);
           console.log("User Signed In");
           Alert.alert("User Signed In!");
-          router.push('./home');
+          router.push('./Home');
         } catch (error: any) {
           
           console.error("Sign in Error:", error.message);
@@ -45,4 +45,4 @@ const sign_in = () => {
   )
 }
 
-export default sign_in
+export default Sign_in

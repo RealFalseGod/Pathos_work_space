@@ -4,7 +4,7 @@ import { Link,useRouter } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { Alert } from 'react-native';
-const sign_up = () => {
+const Sign_up = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
@@ -13,7 +13,8 @@ const sign_up = () => {
         await createUserWithEmailAndPassword(auth, email, password);
         console.log("User registered successfully!");
         Alert.alert("Userddd registered successfully!");
-        router.push('./sign_in');
+        router.push('./Sign_in');
+        
       } catch (error: any) {
         
         console.error("Sign dadsfUp Error:", error.message);
@@ -45,6 +46,6 @@ const sign_up = () => {
   )
 }
 
-export default sign_up
+export default Sign_up
 
 const styles = StyleSheet.create({})

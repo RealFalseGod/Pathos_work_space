@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TextInput,Button,TouchableOpacity } from 'react-native'
 import React,{useState} from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker';
-const start = () => {
+import { Link,useRouter } from "expo-router";
+const Start = () => {
+    const router = useRouter();
     const [step,setStep] = useState(1);
     const [name, setName] = useState('');
     const [birthdate, setBirthDate] = useState(new Date());
@@ -103,13 +105,13 @@ const start = () => {
             <Text>Back</Text>
           </TouchableOpacity>
         )}
-        {step < 3 && (
+        {step < 4 && (
           <TouchableOpacity className="p-2 bg-blue-500 rounded-md" onPress={() => setStep(step + 1)}>
             <Text className="text-white">Next</Text>
           </TouchableOpacity>
         ) }
-        {step <4  && (
-          <TouchableOpacity className="p-2 bg-blue-500 rounded-md" onPress={() => setStep(step +1)}>
+        {step ===4  && (
+          <TouchableOpacity className="p-2 bg-blue-500 rounded-md" onPress={() => router.push('./Home')}>
             <Text className="text-white">Finish</Text>
           </TouchableOpacity>
         )}
@@ -119,6 +121,6 @@ const start = () => {
   )
 }
 
-export default start
+export default Start
 
 const styles = StyleSheet.create({})

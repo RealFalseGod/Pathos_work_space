@@ -2,7 +2,7 @@ import { View, Text, ScrollView, Image,Button} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link } from "expo-router";
-const startHome = () => {
+const StartHome = () => {
   return (
     
     <View className='flex-1 justify-center items-center'>
@@ -24,4 +24,4 @@ const startHome = () => {
   )
 }
 
-export default startHome
+export default StartHome

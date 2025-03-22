@@ -1,12 +1,15 @@
-import { View, Text } from 'react-native'
+import { View, Text,Button } from 'react-native'
 import React from 'react'
+import { Link } from "expo-router";
+import Index from './index'
 
-const home = () => {
+const Home = () => {
   return (
     <View>
-      <Text>Haha </Text>
+      <Text>Home Screen</Text>
+      <Link href='./(tabs)/Start'> start  </Link>
     </View>
   )
 }
 
-export default home
+export default Home
