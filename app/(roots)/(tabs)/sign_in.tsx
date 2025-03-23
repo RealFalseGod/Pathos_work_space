@@ -4,9 +4,11 @@ import { Link,router,useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { Alert } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
 
-const Sign_in = () => {
-  const [email, setEmail] = useState('');
+const Sign_in = ({ navigation }: { navigation: NavigationProp<any> }) => {
+
+      const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const router = useRouter();
       const handleSignin = async () => {
@@ -14,7 +16,6 @@ const Sign_in = () => {
           await signInWithEmailAndPassword(auth, email, password);
           console.log("User Signed In");
           Alert.alert("User Signed In!");
-          router.push('./Home');
         } catch (error: any) {
           
           console.error("Sign in Error:", error.message);
