@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import Profile_page from './Profile_page';
 import Home from './home';
+import Taskbar from './taskbar'
 import { auth } from '../../../firebaseConfig';
 export default function Bottom_nav() {
     
@@ -12,6 +13,7 @@ export default function Bottom_nav() {
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Profile_page" component={Profile_page} />
+                <Tab.Screen name="Tasks" component={Taskbar} />
             </Tab.Navigator>
     );
 };
