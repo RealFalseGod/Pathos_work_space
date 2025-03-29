@@ -1,4 +1,5 @@
 import { SplashScreen, Stack,router } from "expo-router";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useFonts } from "expo-font";
 import './globals.css';
 import { useEffect,useState } from "react";
