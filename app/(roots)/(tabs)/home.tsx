@@ -7,7 +7,7 @@ import { auth } from '../../../firebaseConfig';
 const Home = () => {
   return (
     <View>
-      <Text>Home Screen</Text>
+      <Text>Upcoming tasks or today's tasks haha</Text>
     </View>
   )
 }
