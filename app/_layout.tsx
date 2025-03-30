@@ -1,43 +1,26 @@
-import { SplashScreen, Stack,router } from "expo-router";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import './globals.css';
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { createStackNavigator } from '@react-navigation/stack';
 import { auth } from '../firebaseConfig';
 import Sign_in from "./(roots)/(tabs)/sign_in";
 import Sign_up from "./(roots)/(tabs)/sign_up";
-import Home from "./(roots)/(tabs)/home"
-import Index from "./(roots)/(tabs)/index"
-import Profile_page from "./(roots)/(tabs)/Profile_page"
-import Start from "./(roots)/(tabs)/Start"
-import StartHome from "./(roots)/(tabs)/StartHome";
+import Index from "./(roots)/(tabs)/index";
+import Start from "./(roots)/(tabs)/Start";
 import Bottom_nav from './(roots)/(tabs)/_layout';
-
+import BackgroundFetch from "react-native-background-fetch";
+import { resetScheduledTasks, isTaskDue } from './Scheduled';
 export default function RootLayout() {
   const Stack = createStackNavigator();
-  const [isLoggedIn, setIsLoggedIn] =  useState<boolean | null>(null);
-  const [fontsLoaded] = useFonts( {
-"Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
-  "Poppins-BlackItalic": require("../assets/fonts/Poppins-BlackItalic.ttf"),
-  "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
-  "Poppins-BoldItalic": require("../assets/fonts/Poppins-BoldItalic.ttf"),
-  "Poppins-ExtraBold": require("../assets/fonts/Poppins-ExtraBold.ttf"),
-  "Poppins-ExtraBoldItalic": require("../assets/fonts/Poppins-ExtraBoldItalic.ttf"),
-  "Poppins-ExtraLight": require("../assets/fonts/Poppins-ExtraLight.ttf"),
-  "Poppins-ExtraLightItalic": require("../assets/fonts/Poppins-ExtraLightItalic.ttf"),
-  "Poppins-Italic": require("../assets/fonts/Poppins-Italic.ttf"),
-  "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
-  "Poppins-LightItalic": require("../assets/fonts/Poppins-LightItalic.ttf"),
-  "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
-  "Poppins-MediumItalic": require("../assets/fonts/Poppins-MediumItalic.ttf"),
-  "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
-  "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
-  "Poppins-SemiBoldItalic": require("../assets/fonts/Poppins-SemiBoldItalic.ttf"),
-  "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
-  "Poppins-ThinItalic": require("../assets/fonts/Poppins-ThinItalic.ttf"),
-  })
-  
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [fontsLoaded] = useFonts({
+    "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
+    "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
+    "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
+    // Add other fonts as needed
+  });
+
   const AuthStack = () => (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" component={Index} />
@@ -47,40 +30,76 @@ export default function RootLayout() {
     </Stack.Navigator>
   );
 
-  useEffect( () =>
-  {
+  useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]
-  );
-
-
-  
+  }, [fontsLoaded]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        console.log("user hmmm logged in");
+        console.log("User logged in");
         setIsLoggedIn(true);
-      
       } else {
-        console.log("user not logged in");
+        console.log("User not logged in");
         setIsLoggedIn(false);
-       
       }
     });
 
-   
     return unsubscribe;
   }, []);
-  if (!fontsLoaded|| isLoggedIn === null) return null;
+
+  // Configure Background Fetch
+  useEffect(() => {
+    const configureBackgroundFetch = async () => {
+      const status = await BackgroundFetch.configure(
+        {
+          minimumFetchInterval: 15, // Run every 15 minutes
+          stopOnTerminate: false, // Continue running even if the app is terminated
+          startOnBoot: true, // Start automatically when the device boots
+        },
+        async (taskid) => {
+          console.log('[BackgroundFetch] Task started');
+          const now = new Date();
+          if (now.getHours() === 12 && now.getMinutes() === 0) {
+            console.log('[BackgroundFetch] It is 12 PM, executing task...');
+            await resetScheduledTasks(); // Call the reset function
+          } else {
+            console.log('[BackgroundFetch] Not 12 PM, skipping task...');
+          }
+          BackgroundFetch.finish(taskid);
+        },
+        (error) => {
+          console.error('[BackgroundFetch] Failed to configure', error);
+        }
+      );
+
+      console.log('[BackgroundFetch] Status:', status);
+    };
+
+    configureBackgroundFetch();
+
+    return () => {
+      BackgroundFetch.stop(); // Stop background fetch when the component unmounts
+    };
+  }, []);
+
+  // Reset Scheduled Tasks Function
+  
+  // Helper Function to Check if a Task is Due
+  const isTaskDue = (dueDate: string, currentDate: Date, intervalDays: number) => {
+    const due = new Date(dueDate);
+    const differenceInTime = currentDate.getTime() - due.getTime();
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    return differenceInDays >= intervalDays;
+  };
+
+  if (!fontsLoaded || isLoggedIn === null) return null;
 
   return (
     <>
-      {isLoggedIn ? <Bottom_nav /> : <AuthStack />} 
+      {isLoggedIn ? <Bottom_nav /> : <AuthStack />}
     </>
   );
-
-
 }

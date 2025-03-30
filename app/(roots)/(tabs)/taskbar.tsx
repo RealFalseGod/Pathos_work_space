@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import Modal from "react-native-modal";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { SafeAreaView } from 'react-native';
 const Taskbar = () => {
-  const [tasks, setTasks] = useState<{ id: string; name: string; difficulty: string; frequency: string; dueDate: string; }[]>([]);
+  const [tasks, setTasks] = useState<{ id: string; name: string; difficulty: string; frequency: string; dueDate: string; status: string; }[]>([]);
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -32,6 +32,11 @@ const Taskbar = () => {
       console.error('Failed to load tasks', error);
     }
   };
+  const deleteTask = (id: string) => {
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks); // Save the updated tasks to AsyncStorage
+  };
 
   const filteredTasks = filter
     ? tasks.filter((task) => task.difficulty === filter || task.frequency === filter)
@@ -44,7 +49,13 @@ const Taskbar = () => {
       console.error('Failed to save tasks', error);
     }
   };
-
+  const updateTaskStatus = (id: string, newStatus: string) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, status: newStatus } : task
+    );
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks); // Save the updated tasks to AsyncStorage
+  };
   const addTask = () => {
     if (!taskName.trim()) {
       alert("Task name is required.");
@@ -67,6 +78,7 @@ const Taskbar = () => {
       frequency,
       dueDate: dueDate.toISOString(),
       dueTime: dueTime.toISOString(),
+      status: "Pending",
     };
 
     const newTasks = [...tasks, newTask];
@@ -96,46 +108,56 @@ const Taskbar = () => {
     setShowTimePicker(false);
   };
 
-  const renderTask = ({ item }: { item: { id: string; name: string; difficulty: string; frequency: string; dueDate: string; } }) => (
-    <View className="p-2 border-b border-gray-200">
+ const renderTask = ({ item }: { item: { id: string; name: string; difficulty: string; frequency: string; dueDate: string; status: string; } }) => (
+  <View className="p-2 border-b border-gray-200 flex-row justify-between items-center">
+    <View>
       <Text className="text-lg font-semibold">{item.name}</Text>
       <Text>Difficulty: {item.difficulty}</Text>
       <Text>Frequency: {item.frequency}</Text>
       <Text>Due Date: {new Date(item.dueDate).toDateString()}</Text>
+      <Text>Status: {item.status}</Text>
     </View>
-  );
+    <View className="flex-row space-x-2">
+      {item.status !== "Completed" && (
+        <TouchableOpacity
+          onPress={() => updateTaskStatus(item.id, "Completed")}
+          className="bg-green-500 px-4 py-2 rounded-lg"
+        >
+          <Text className="text-white">Done</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
+        onPress={() => deleteTask(item.id)}
+        className="bg-red-500 px-4 py-2 rounded-lg"
+      >
+        <Text className="text-white">Delete</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
 
   return (
+    <SafeAreaView className="flex-1 bg-white">
     <View className="p-4">
       {/* Filter Button with Dropdown */}
       <View className="flex-row justify-between items-center mb-4 relative">
   <Text className="text-xl font-bold">Task List</Text>
-  <View>
+  <View className="flex-row justify-between items-center bg-gray-100 p-2 rounded-lg">
+  {["All","One-Time", "Daily", "Weekly", "Monthly", "Annually"].map((option) => (
     <TouchableOpacity
-      onPress={() => setShowFilterOptions(!showFilterOptions)}
-      className="px-4 py-2 rounded-lg bg-blue-500"
+      key={option}
+      onPress={() => setFilter(option === "All" ? null : option)}
+      className={`px-4 py-2 rounded-lg ${
+        filter === option ? "bg-blue-500" : "bg-gray-200"
+      }`}
     >
-      <Text className="text-white">Filter</Text>
+      <Text className={`text-sm font-semibold ${filter === option ? "text-white" : "text-black"}`}>
+        {option}
+      </Text>
     </TouchableOpacity>
-    {showFilterOptions && (
-      <View className="mt-2 bg-white border border-gray-300 rounded-lg shadow-lg w-40">
-        {["All", "Easy", "Intermediate", "Hard", "Daily", "Weekly"].map((option) => (
-          <TouchableOpacity
-            key={option}
-            onPress={() => {
-              setFilter(option === "All" ? null : option);
-              setShowFilterOptions(false); // Close dropdown after selection
-            }}
-            className={`px-4 py-2 ${
-              filter === option ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            <Text className={filter === option ? "text-white" : "text-black"}>{option}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    )}
-  </View>
+  ))}
+</View>
+
 </View>
 
       {/* Task List */}
@@ -145,7 +167,12 @@ const Taskbar = () => {
         keyExtractor={(item) => item.id}
         className="mt-4"
       />
-
+      <TouchableOpacity
+  onPress={() => setModalVisible(true)}
+  className="absolute bottom-8 right-8 bg-blue-500 w-16 h-16 rounded-full items-center justify-center shadow-lg"
+>
+<Text className="text-white text-3xl font-bold">+</Text>
+</TouchableOpacity>
       {/* Add Task Modal */}
       <Modal isVisible={modalVisible} animationIn="slideInUp" animationOut="slideOutDown">
         <View className="p-6 bg-white rounded-xl mx-6 mt-20">
@@ -217,6 +244,7 @@ const Taskbar = () => {
         </View>
       </Modal>
     </View>
+    </SafeAreaView>
   );
 };
 
