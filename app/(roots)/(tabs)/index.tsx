@@ -45,8 +45,8 @@ export default function Index({ navigation }: { navigation: NavigationProp<any> 
         Pathos
       </Text>
       
-       <Text className="text-xl  font-Poppins-Bold text-center text-[#58cc02] ">
-        Level Up Your Mental Health
+       <Text className="text-xl  font-Poppins-semiBold text-center text-[#B2B2B0] ">
+        Level Up Your Productivity
         </Text>   
         </View>
         <View className='flex-2 justify-end items-center p-4'>
@@ -57,10 +57,9 @@ export default function Index({ navigation }: { navigation: NavigationProp<any> 
         onPressOut={handlePressOutSignUp}
   onPress={() => navigation.navigate('sign_up')}
   
-  className="min-w-full rounded-t-[10px] rounded-b-[8px] my-2 transition-all px-4 py-4 bg-[#93D334] relative"
+  className="min-w-full rounded-t-[10px] rounded-b-[8px] my-2 transition-all px-4 py-4 bg-[#93D334] border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] border-[#77B62A] relative"
 >
   
-<View className="absolute bottom-0 left-0 right-0 mx-auto h-[5px] bg-[#77B62A] rounded-b-[20px]" />
 <Text className="text-center text-black font-Poppins-bold  text-xl text-[#FFFFFD]">GET STARTED</Text>
 </TouchableOpacity>
 </Animated.View>
@@ -71,9 +70,9 @@ export default function Index({ navigation }: { navigation: NavigationProp<any> 
         onPress={() => navigation.navigate('sign_in')}
         onPressIn={handlePressInSignIn}
         onPressOut={handlePressOutSignIn}
-        className="min-w-full rounded-[16px] border-2 my-2 px-4 py-3 transition-all"
+        className="min-w-full rounded-t-[10px] rounded-b-[8px] my-2 transition-all px-4 py-4 bg-[#FFFFFD] border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] border-[#E5E5E3] relative"
       >
-        <Text className="text-center text-black font-semibold">I ALREADY HAVE AN ACCOUNT</Text>
+        <Text className="text-center text-[#93D334] font-Poppins-bold ">I ALREADY HAVE AN ACCOUNT</Text>
       </TouchableOpacity>
     </Animated.View>
       
