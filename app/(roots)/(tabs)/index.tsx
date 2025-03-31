@@ -1,8 +1,12 @@
-import { Text, View, TouchableOpacity, Animated,Image } from "react-native";
+import { Text, View, TouchableOpacity, Animated, Image } from "react-native";
 import { useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 
-export default function Index({ navigation }: { navigation: NavigationProp<any> }) {
+export default function Index({
+  navigation,
+}: {
+  navigation: NavigationProp<any>;
+}) {
   const [scaleSignUp] = useState(new Animated.Value(1));
   const [scaleSignIn] = useState(new Animated.Value(1));
 
@@ -38,9 +42,10 @@ export default function Index({ navigation }: { navigation: NavigationProp<any> 
     <View className="flex-1 bg-[#FFFFFD]">
       {/* Title Section */}
       <View className="flex-1 justify-center items-center pb-10">
-      <Image
+        <Image
           source={require("../../../assets/images/cherry.png")} // Adjust the path to your image
-          className="w-100 h-full" // Tailwind classes for width, height, and margin-bottom
+          className="w-100 h-full
+          " // Tailwind classes for width, height, and margin-bottom
           resizeMode="contain" // Ensures the image scales properly
         />
         <Text className="pt-12 text-8xl font-Poppins-bold text-center text-[#58cc02]">
@@ -49,7 +54,6 @@ export default function Index({ navigation }: { navigation: NavigationProp<any> 
         <Text className="text-xl font-Poppins-semiBold text-center text-[#B2B2B0]">
           Level Up Your Productivity
         </Text>
-       
       </View>
 
       {/* Buttons Section */}

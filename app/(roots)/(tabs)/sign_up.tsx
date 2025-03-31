@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity, Alert } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { NavigationProp } from '@react-navigation/native';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { NavigationProp } from "@react-navigation/native";
 
 const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [step, setStep] = useState(1);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [birthdate, setBirthDate] = useState(new Date());
-  const [gender, setGender] = useState('');
-  const [seek, setSeek] = useState('');
-  const [mood, setMood] = useState('');
+  const [gender, setGender] = useState("");
+  const [seek, setSeek] = useState("");
+  const [mood, setMood] = useState("");
   const [show, setShow] = useState(false);
-  const [struggle, setStruggle] = useState('');
-  const [goal, setGoal] = useState('');
+  const [struggle, setStruggle] = useState("");
+  const [goal, setGoal] = useState("");
 
   const handleDateChange = (event: any, selectedDate: any) => {
     if (selectedDate) {
@@ -30,7 +38,7 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("User registered successfully!");
       Alert.alert("User registered successfully!");
-      navigation.navigate('Start');
+      navigation.navigate("Start");
     } catch (error: any) {
       console.error("SignUp Error:", error.message);
       Alert.alert("SignUp Error:", error.message);
@@ -59,7 +67,7 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
           )}
           <Text>Selected: {birthdate.toDateString()}</Text>
           <Text style={styles.label}>Gender:</Text>
-          {['Male', 'Female', 'Other'].map((item, index) => (
+          {["Male", "Female", "Other"].map((item, index) => (
             <TouchableOpacity
               key={`${item}-${index}`}
               style={[
@@ -78,20 +86,27 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
         <View style={styles.stepContainer}>
           <Text style={styles.stepTitle}>How are You?</Text>
           <Text>How do you feel on a general basis?</Text>
-          {['Happy', 'Sad', 'Angry', 'Anxious', 'Tired', 'Confused'].map((item, index) => (
-            <TouchableOpacity
-              key={`${item}-${index}`}
-              style={[
-                styles.optionButton,
-                mood === item ? styles.selectedOption : {},
-              ]}
-              onPress={() => setMood(item)}
-            >
-              <Text style={styles.optionText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
+          {["Happy", "Sad", "Angry", "Anxious", "Tired", "Confused"].map(
+            (item, index) => (
+              <TouchableOpacity
+                key={`${item}-${index}`}
+                style={[
+                  styles.optionButton,
+                  mood === item ? styles.selectedOption : {},
+                ]}
+                onPress={() => setMood(item)}
+              >
+                <Text style={styles.optionText}>{item}</Text>
+              </TouchableOpacity>
+            )
+          )}
           <Text>What do you Seek?</Text>
-          {['Greatness', 'Peace', 'Be Better than You', 'Be Better than others'].map((item, index) => (
+          {[
+            "Greatness",
+            "Peace",
+            "Be Better than You",
+            "Be Better than others",
+          ].map((item, index) => (
             <TouchableOpacity
               key={`${item}-${index}`}
               style={[
@@ -104,7 +119,14 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
             </TouchableOpacity>
           ))}
           <Text>What do you struggle with daily?</Text>
-          {['Time Management', 'Stress & Anxiety', 'Physical Health', 'Discipline & Consistency', 'Procrastination', 'Emotional imbalance'].map((item, index) => (
+          {[
+            "Time Management",
+            "Stress & Anxiety",
+            "Physical Health",
+            "Discipline & Consistency",
+            "Procrastination",
+            "Emotional imbalance",
+          ].map((item, index) => (
             <TouchableOpacity
               key={`${item}-${index}`}
               style={[
@@ -129,7 +151,7 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
       {step === 4 && (
         <View style={styles.stepContainer}>
           <Text style={styles.stepTitle}>Do you want your goals to be?</Text>
-          {['Daily', 'Weekly', 'Monthly', 'Yearly'].map((item, index) => (
+          {["Daily", "Weekly", "Monthly", "Yearly"].map((item, index) => (
             <TouchableOpacity
               key={`${item}-${index}`}
               style={[
@@ -166,17 +188,26 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
 
       <View style={styles.navigationButtons}>
         {step > 1 && (
-          <TouchableOpacity style={styles.navigationButton} onPress={() => setStep(step - 1)}>
+          <TouchableOpacity
+            style={styles.navigationButton}
+            onPress={() => setStep(step - 1)}
+          >
             <Text>Back</Text>
           </TouchableOpacity>
         )}
         {step < 4 && (
-          <TouchableOpacity style={styles.navigationButton} onPress={() => setStep(step + 1)}>
+          <TouchableOpacity
+            style={styles.navigationButton}
+            onPress={() => setStep(step + 1)}
+          >
             <Text style={styles.navigationButtonText}>Next</Text>
           </TouchableOpacity>
         )}
         {step === 4 && (
-          <TouchableOpacity style={styles.navigationButton} onPress={() => setStep(step + 1)}>
+          <TouchableOpacity
+            style={styles.navigationButton}
+            onPress={() => setStep(step + 1)}
+          >
             <Text style={styles.navigationButtonText}>Finish</Text>
           </TouchableOpacity>
         )}
@@ -197,12 +228,12 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingLeft: 8,
@@ -214,29 +245,29 @@ const styles = StyleSheet.create({
   optionButton: {
     padding: 10,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 5,
     marginVertical: 5,
   },
   selectedOption: {
-    backgroundColor: 'blue',
-    color: 'white',
+    backgroundColor: "blue",
+    color: "white",
   },
   optionText: {
-    textAlign: 'center',
-    color: 'black',
+    textAlign: "center",
+    color: "black",
   },
   navigationButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
   },
   navigationButton: {
-    backgroundColor: 'lightgray',
+    backgroundColor: "lightgray",
     padding: 10,
     borderRadius: 5,
   },
   navigationButtonText: {
-    color: 'white',
+    color: "white",
   },
 });
