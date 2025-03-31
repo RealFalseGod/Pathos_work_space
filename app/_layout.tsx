@@ -50,6 +50,7 @@ export default function RootLayout() {
           headerTitleAlign: "center",
           headerTitle: "", // Removes the title
           headerTintColor: "#A4A4A2",
+          headerStyle: { backgroundColor: "#E9F8D8" },
         }}
       />
       <Stack.Screen name="Start" component={Start} />
@@ -128,7 +129,7 @@ export default function RootLayout() {
   if (!fontsLoaded || isLoggedIn === null) return null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFFFFD" }}>
+    <View className="flex-1 bg-[#FFFFFD]">
       <StatusBar style="dark" backgroundColor="#FFFFFD" />
       {isLoggedIn ? <Bottom_nav /> : <AuthStack />}
     </View>

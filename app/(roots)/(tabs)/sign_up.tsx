@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   TextInput,
   View,
   Button,
   TouchableOpacity,
   Alert,
+  Animated,
+  Easing,
 } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
@@ -19,12 +20,57 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [birthdate, setBirthDate] = useState(new Date());
-  const [gender, setGender] = useState("");
-  const [seek, setSeek] = useState("");
+
   const [mood, setMood] = useState("");
   const [show, setShow] = useState(false);
+  const [selectedMood, setSelectedMood] = useState(""); // Add state for selectedMood
   const [struggle, setStruggle] = useState("");
   const [goal, setGoal] = useState("");
+  const [scaleSignUp] = useState(new Animated.Value(1));
+  const [opacity] = useState(new Animated.Value(0)); // Define opacity as an animated value
+  const [translateY] = useState(new Animated.Value(50)); // Define translateY as an animated value
+  const [scaleBack] = useState(new Animated.Value(1));
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2500,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: true,
+    }).start();
+  }, []);
+  const handlePressInSignUp = () => {
+    Animated.spring(scaleSignUp, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutSignUp = () => {
+    Animated.spring(scaleSignUp, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+  const handlePressInBack = () => {
+    Animated.spring(scaleBack, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutBack = () => {
+    Animated.spring(scaleBack, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const handleDateChange = (event: any, selectedDate: any) => {
     if (selectedDate) {
@@ -46,228 +92,272 @@ const SignUp = ({ navigation }: { navigation: NavigationProp<any> }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-[#E9F8D8]">
       {step === 1 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.stepTitle}>Who are you?</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your name"
-            value={name}
-            onChangeText={setName}
-          />
-          <Text style={styles.label}>Birthdate</Text>
-          <Button title="Select Birthdate" onPress={() => setShow(true)} />
-          {show && (
-            <DateTimePicker
-              value={birthdate || new Date()}
-              mode="date"
-              onChange={handleDateChange}
-            />
-          )}
-          <Text>Selected: {birthdate.toDateString()}</Text>
-          <Text style={styles.label}>Gender:</Text>
-          {["Male", "Female", "Other"].map((item, index) => (
-            <TouchableOpacity
-              key={`${item}-${index}`}
-              style={[
-                styles.optionButton,
-                gender === item ? styles.selectedOption : {},
-              ]}
-              onPress={() => setGender(item)}
-            >
-              <Text style={styles.optionText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
-      {step === 2 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.stepTitle}>How are You?</Text>
-          <Text>How do you feel on a general basis?</Text>
-          {["Happy", "Sad", "Angry", "Anxious", "Tired", "Confused"].map(
-            (item, index) => (
+        <View className="flex-1 justify-center items-center">
+          <Animated.Text
+            className="text-4xl font-Poppins-bold text-[#57CC02] -mt-56"
+            style={{
+              opacity,
+              transform: [{ translateY }],
+            }}
+          >
+            Hey! Ready to Level up?
+          </Animated.Text>
+          <View className="absolute bottom-5 w-full px-4">
+            <Animated.View style={{ transform: [{ scale: scaleSignUp }] }}>
               <TouchableOpacity
-                key={`${item}-${index}`}
-                style={[
-                  styles.optionButton,
-                  mood === item ? styles.selectedOption : {},
-                ]}
-                onPress={() => setMood(item)}
+                activeOpacity={1}
+                onPressIn={handlePressInSignUp}
+                onPressOut={handlePressOutSignUp}
+                onPress={() => setStep(step + 1)}
+                className="min-w-full rounded-t-[10px] rounded-b-[8px] my-2 transition-all bg-[#93D334] px-4 py-3 border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] border-[#77B62A] relative"
               >
-                <Text style={styles.optionText}>{item}</Text>
+                <Text className="text-center font-Poppins-bold text-2xl text-[#FFFFFD]">
+                  YEAHHHH
+                </Text>
               </TouchableOpacity>
-            )
-          )}
-          <Text>What do you Seek?</Text>
-          {[
-            "Greatness",
-            "Peace",
-            "Be Better than You",
-            "Be Better than others",
-          ].map((item, index) => (
-            <TouchableOpacity
-              key={`${item}-${index}`}
-              style={[
-                styles.optionButton,
-                seek === item ? styles.selectedOption : {},
-              ]}
-              onPress={() => setSeek(item)}
-            >
-              <Text style={styles.optionText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-          <Text>What do you struggle with daily?</Text>
-          {[
-            "Time Management",
-            "Stress & Anxiety",
-            "Physical Health",
-            "Discipline & Consistency",
-            "Procrastination",
-            "Emotional imbalance",
-          ].map((item, index) => (
-            <TouchableOpacity
-              key={`${item}-${index}`}
-              style={[
-                styles.optionButton,
-                struggle === item ? styles.selectedOption : {},
-              ]}
-              onPress={() => setStruggle(item)}
-            >
-              <Text style={styles.optionText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
+            </Animated.View>
+          </View>
         </View>
       )}
+      {step === 2 && (
+        <View className="flex-1 justify-center items-center bg-[#E9F8D8] mb-35">
+          <View className="w-4/5 bg-[#FFFFFD] p-8 rounded-3xl shadow-xl items-center">
+            <Text className="text-3xl font-Poppins-bold text-[#57CC02] mb-6">
+              Who are you?
+            </Text>
+            <TextInput
+              className="w-full font-Poppins-regular bg-gray-100 p-4 rounded-xl text-lg shadow-sm"
+              placeholder="Enter your name"
+              placeholderTextColor="#aaa"
+              value={name}
+              onChangeText={setName}
+            />
 
+            <Text className="text-3xl font-Poppins-bold text-[#57CC02] mt-6">
+              Birthdate
+            </Text>
+            <TouchableOpacity
+              className="bg-[#57CC02] px-5 py-3 rounded-xl mt-3 active:scale-95 transition-al"
+              onPress={() => setShow(true)}
+            >
+              <Text className="text-white font-[Poppins-Bold] text-lg">
+                Select Birthdate
+              </Text>
+            </TouchableOpacity>
+
+            {show && (
+              <DateTimePicker
+                value={birthdate || new Date()}
+                mode="date"
+                onChange={handleDateChange}
+              />
+            )}
+
+            {birthdate &&
+              birthdate.toDateString() !== new Date().toDateString() && (
+                <Text className="text-2xl font-Poppins-bold text-[#4A772F] mt-2 p-5">
+                  🎂 Born on {birthdate.toDateString()}
+                </Text>
+              )}
+            <View className="w-full items-center">
+              <Text className="text-3xl font-Poppins-bold text-[#57CC02] mt-8 mb-3">
+                How are You Always?
+              </Text>
+
+              <View className="flex-row justify-center w-4/5  p-3 rounded-2xl ">
+                {[
+                  { mood: "Happy", emoji: "😄" },
+                  { mood: "Sad", emoji: "😢" },
+                  { mood: "Angry", emoji: "😡" },
+                  { mood: "Anxious", emoji: "😰" },
+                  { mood: "Tired", emoji: "😴" },
+                  { mood: "Confused", emoji: "😕" },
+                ].map(({ mood: moodOption, emoji }, index) => (
+                  <TouchableOpacity
+                    key={moodOption} // Use the mood as the unique key
+                    onPress={() => {
+                      setMood(moodOption);
+                      setSelectedMood(moodOption); // Update selectedMood when a mood is selected
+                    }}
+                    style={[
+                      {
+                        padding: 8,
+                        borderRadius: 50,
+                        transform: [
+                          { scale: selectedMood === moodOption ? 1.5 : 1 },
+                        ],
+                      },
+                    ]}
+                  >
+                    <Text style={{ fontSize: 30 }}>{emoji}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            <View className="w-full px-4 flex-row gap-4 pt-5">
+              {/* Back Button */}
+              <Animated.View
+                style={{ transform: [{ scale: scaleBack }] }}
+                className="flex-1"
+              >
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPressIn={handlePressInBack}
+                  onPressOut={handlePressOutBack}
+                  onPress={() => setStep(step - 1)}
+                  className="rounded-t-[10px] rounded-b-[8px] transition-all bg-[#93D334] px-4 py-3 border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] border-[#77B62A] relative"
+                >
+                  <Text className="text-center font-Poppins-bold text-2xl text-[#FFFFFD]">
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              </Animated.View>
+
+              {/* Continue Button */}
+              <Animated.View
+                style={{ transform: [{ scale: scaleSignUp }] }}
+                className="flex-1"
+              >
+                <TouchableOpacity
+                  activeOpacity={name && selectedMood ? 1 : 0.7} // Reduce opacity if disabled
+                  onPressIn={
+                    name && selectedMood ? handlePressInSignUp : undefined
+                  }
+                  onPressOut={
+                    name && selectedMood ? handlePressOutSignUp : undefined
+                  }
+                  onPress={
+                    name && selectedMood ? () => setStep(step + 1) : undefined
+                  }
+                  disabled={!name || !selectedMood} // Disable the button if fields are empty
+                  className={`rounded-t-[10px] rounded-b-[8px] transition-all px-4 py-3 ${
+                    name && selectedMood
+                      ? "bg-[#93D334] border-[#77B62A]" // Enabled button styles
+                      : "bg-gray-400 border-gray-300" // Disabled button styles
+                  } border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] relative`}
+                >
+                  <Text
+                    className={`text-center font-Poppins-bold text-2xl ${
+                      name && selectedMood ? "text-[#FFFFFD]" : "text-gray-200"
+                    }`}
+                  >
+                    Continue
+                  </Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          </View>
+        </View>
+      )}
       {step === 3 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.stepTitle}>How Pathos Works</Text>
-          <Text>Some boring rules and regulations...</Text>
+        <View className="flex-1 justify-center items-center bg-[#E9F8D8] mb-35">
+          <View className="w-4/5 bg-[#FFFFFD] p-8 rounded-3xl shadow-xl items-center">
+            <Text className="text-3xl font-Poppins-bold text-[#57CC02] mb-6">
+              SIGN UP
+            </Text>
+            <TextInput
+              placeholder="Enter your email"
+              onChangeText={setEmail}
+              value={email}
+              className="w-full font-Poppins-regular bg-gray-100 p-4 rounded-t-xl text-lg"
+            />
+            <TextInput
+              placeholder="Enter your password"
+              secureTextEntry
+              onChangeText={setPassword}
+              value={password}
+              className="w-full font-Poppins-regular bg-gray-100 p-4 rounded-b-xl text-lg"
+            />
+
+            <View className="w-full px-4 flex-row gap-4 pt-5">
+              {/* Back Button */}
+              <Animated.View
+                style={{ transform: [{ scale: scaleBack }] }}
+                className="flex-1"
+              >
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPressIn={handlePressInBack}
+                  onPressOut={handlePressOutBack}
+                  onPress={() => setStep(step - 1)}
+                  className="rounded-t-[10px] rounded-b-[8px] transition-all bg-[#93D334] px-4 py-3 border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] border-[#77B62A] relative"
+                >
+                  <Text className="text-center font-Poppins-bold text-2xl text-[#FFFFFD]">
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              </Animated.View>
+
+              {/* Continue Button */}
+              <Animated.View
+                style={{ transform: [{ scale: scaleSignUp }] }}
+                className="flex-1"
+              >
+                <TouchableOpacity
+                  activeOpacity={email && password ? 1 : 0.7} // Reduce opacity if disabled
+                  onPressIn={
+                    email && password ? handlePressInSignUp : undefined
+                  }
+                  onPressOut={
+                    email && password ? handlePressOutSignUp : undefined
+                  }
+                  onPress={email && password ? () => handleSignUp : undefined}
+                  disabled={!email || !password} // Disable the button if fields are empty
+                  className={`rounded-t-[10px] rounded-b-[8px] transition-all px-4 py-3 ${
+                    email && password
+                      ? "bg-[#93D334] border-[#77B62A]" // Enabled button styles
+                      : "bg-gray-400 border-gray-300" // Disabled button styles
+                  } border-t-[1px] border-l-[1px] border-r-[1px] border-b-[6px] relative`}
+                >
+                  <Text
+                    className={`text-center font-Poppins-bold text-2xl ${
+                      email && password ? "text-[#FFFFFD]" : "text-gray-200"
+                    }`}
+                  >
+                    Register
+                  </Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
+          </View>
         </View>
       )}
-
       {step === 4 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.stepTitle}>Do you want your goals to be?</Text>
-          {["Daily", "Weekly", "Monthly", "Yearly"].map((item, index) => (
+        <View className="flex-1 justify-center items-center bg-[#E9F8D8] p-4">
+          <Text className="text-3xl font-[Poppins-Bold] text-[#57CC02] mb-6">
+            Sign Up
+          </Text>
+
+          <View className="w-full bg-white p-6 rounded-2xl shadow-lg">
+            <TextInput
+              placeholder="Enter your email"
+              onChangeText={setEmail}
+              value={email}
+              className="bg-[#F1F1F1] p-4 rounded-2xl mb-4 text-lg"
+            />
+            <TextInput
+              placeholder="Enter your password"
+              secureTextEntry
+              onChangeText={setPassword}
+              value={password}
+              className="bg-[#F1F1F1] p-4 rounded-2xl mb-6 text-lg"
+            />
+
             <TouchableOpacity
-              key={`${item}-${index}`}
-              style={[
-                styles.optionButton,
-                goal === item ? styles.selectedOption : {},
-              ]}
-              onPress={() => setGoal(item)}
+              onPress={handleSignUp}
+              className="bg-[#57CC02] py-3 rounded-2xl shadow-md active:scale-95 transition-all"
             >
-              <Text style={styles.optionText}>{item}</Text>
+              <Text className="text-white text-lg font-[Poppins-Bold] text-center">
+                Sign Up
+              </Text>
             </TouchableOpacity>
-          ))}
+          </View>
         </View>
       )}
-
-      {step === 5 && (
-        <View style={styles.stepContainer}>
-          <Text style={styles.stepTitle}>Sign Up</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email"
-            onChangeText={setEmail}
-            value={email}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            secureTextEntry
-            onChangeText={setPassword}
-            value={password}
-          />
-          <Button title="Sign Up" onPress={handleSignUp} />
-        </View>
-      )}
-
-      <View style={styles.navigationButtons}>
-        {step > 1 && (
-          <TouchableOpacity
-            style={styles.navigationButton}
-            onPress={() => setStep(step - 1)}
-          >
-            <Text>Back</Text>
-          </TouchableOpacity>
-        )}
-        {step < 4 && (
-          <TouchableOpacity
-            style={styles.navigationButton}
-            onPress={() => setStep(step + 1)}
-          >
-            <Text style={styles.navigationButtonText}>Next</Text>
-          </TouchableOpacity>
-        )}
-        {step === 4 && (
-          <TouchableOpacity
-            style={styles.navigationButton}
-            onPress={() => setStep(step + 1)}
-          >
-            <Text style={styles.navigationButtonText}>Finish</Text>
-          </TouchableOpacity>
-        )}
-      </View>
     </View>
   );
 };
 
 export default SignUp;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  stepContainer: {
-    marginBottom: 20,
-  },
-  stepTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-  },
-  label: {
-    fontSize: 16,
-    marginTop: 10,
-  },
-  optionButton: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    marginVertical: 5,
-  },
-  selectedOption: {
-    backgroundColor: "blue",
-    color: "white",
-  },
-  optionText: {
-    textAlign: "center",
-    color: "black",
-  },
-  navigationButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  navigationButton: {
-    backgroundColor: "lightgray",
-    padding: 10,
-    borderRadius: 5,
-  },
-  navigationButtonText: {
-    color: "white",
-  },
-});
