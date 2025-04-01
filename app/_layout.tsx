@@ -39,6 +39,7 @@ export default function RootLayout() {
           headerShadowVisible: false, // Removes the shadow
           headerTitleAlign: "center",
           headerTintColor: "#A4A4A2",
+          headerStyle: { backgroundColor: "#E9F8D8" },
         }}
       />
       <Stack.Screen
