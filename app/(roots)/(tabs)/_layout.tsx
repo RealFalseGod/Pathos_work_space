@@ -87,7 +87,7 @@ export default function Bottom_nav() {
     <Tab.Navigator
       screenOptions={{
         headerShown: true,
-        headerTitle: "Have a great day", // Set the default header title
+        headerTitle: "Have a great day!", // Set the default header title
         headerTitleAlign: "center", // Center-align the title
         headerStyle: {
           backgroundColor: "#E9F8D8", // Optional: Change header background color
@@ -100,9 +100,16 @@ export default function Bottom_nav() {
       }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
-      <Tab.Screen name="Check_in" component={Day_assess} />
+      <Tab.Screen
+        name="Check_in"
+        component={Day_assess}
+        options={{
+          headerTitle: "Today's Reflection", // Title for the header
+          tabBarLabel: "Check In",
+        }}
+      />
       <Tab.Screen name="Journal Log" component={Daily_log} />
-      <Tab.Screen name="Home" component={Home} />
+
       <Tab.Screen name="Profile_page" component={Profile_page} />
       <Tab.Screen name="Tasks" component={Taskbar} />
     </Tab.Navigator>
