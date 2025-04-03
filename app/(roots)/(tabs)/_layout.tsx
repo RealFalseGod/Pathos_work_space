@@ -108,7 +108,14 @@ export default function Bottom_nav() {
           tabBarLabel: "Check In",
         }}
       />
-      <Tab.Screen name="Journal Log" component={Daily_log} />
+      <Tab.Screen
+        name="Journal Log"
+        component={Daily_log}
+        options={{
+          headerTitle: "Journal Logs", // Title for the header
+          tabBarLabel: "Logs",
+        }}
+      />
 
       <Tab.Screen name="Profile_page" component={Profile_page} />
       <Tab.Screen name="Tasks" component={Taskbar} />

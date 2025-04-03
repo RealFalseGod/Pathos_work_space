@@ -11,7 +11,7 @@ import Start from "./(roots)/(tabs)/Start";
 import Bottom_nav from "./(roots)/(tabs)/_layout";
 import BackgroundFetch from "react-native-background-fetch";
 import { resetScheduledTasks, isTaskDue } from "./Scheduled";
-import { View } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 export default function RootLayout() {
   const Stack = createStackNavigator();
@@ -130,9 +130,9 @@ export default function RootLayout() {
   if (!fontsLoaded || isLoggedIn === null) return null;
 
   return (
-    <View className="flex-1 bg-[#FFFFFD]">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#E9F8D8" }}>
       <StatusBar style="dark" backgroundColor="#FFFFFD" />
       {isLoggedIn ? <Bottom_nav /> : <AuthStack />}
-    </View>
+    </SafeAreaView>
   );
 }
